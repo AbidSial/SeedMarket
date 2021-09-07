@@ -138,7 +138,7 @@ class Seedcontroller extends Controller
 				if($req->hasFile('seed_image')) 
 				{	
 			   $image=$req->file('analysis_report_image')->store('Images');
-			   User::where('seed_id',$req->id)->update(['analysis_report_image' => $image]);
+			   User::where('seed_id',$req->id)->update(['analysis_report_images' => $image]);
 				}
 			$params = array();
 			if($req->has('seed_kind')){

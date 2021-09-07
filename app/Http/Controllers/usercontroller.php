@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 	use Illuminate\Support\Facades\Validator;
 	use JWTAuth;
 	use Tymon\JWTAuth\Exceptions\JWTException;
+	use Illuminate\Support\Facades\DB;
 
 	class usercontroller extends Controller
 	{
@@ -22,8 +23,20 @@ namespace App\Http\Controllers;
 			return response()->json($validator->errors());
 				}
 			{
-			$data=$req->file('Imagefile')->store('Images');
-			$user=new User;
+				$user=new User;
+				if($req->hasFile('profile_image'))
+				{
+					$data=$req->file('profile_image')->store('Images');
+					$user->image_url = $data;
+				}
+				else{
+					return response()->json([
+						'message' => 'User profile_image is required',
+						'status' => false,
+						'data' => null,
+					]);
+				}
+			
 			$user->name=$req->name;
 			$user->image=$data;
 			$user->email=$req->email;
@@ -106,8 +119,8 @@ namespace App\Http\Controllers;
 		    {
 			if($req->hasFile('image')) 
 			{	
-		   $data=$req->file('image')->store('Images');
-		   User::where('id',$req->id)->update(['image' => $data]);
+				$data=$req->file('image')->store('Images');
+				User::where('id',$req->id)->update(['image' => $data]);
 			}
 		   $result=User::where('id',$req->id)->update([
 		   'name' => $req->name,
